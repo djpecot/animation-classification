@@ -3,6 +3,7 @@ from fastai.callbacks.hooks import *
 import scipy.ndimage
 
 class GradCam():
+
     @classmethod
     def from_interp(cls,learn,interp,img_idx,ds_type=DatasetType.Valid,include_label=False):
         # produce heatmap and xb_grad for pred label (and actual label if include_label is True)
@@ -61,9 +62,10 @@ class GradCam():
             
         return cls(xb_img,label1,prob1,hmap1,xb_grad1,label2_args)
     
-    def __init__(self,xb_img,label1,prob1,hmap1,xb_grad1,label2_args=None):
+    def __init__(self,xb_img,label1,prob1,hmap1,xb_grad1,layer,label2_args=None):
         self.xb_img=xb_img
         self.label1,self.prob1,self.hmap1,self.xb_grad1 = label1,prob1,hmap1,xb_grad1
+        self.layer = layer
         if label2_args:
             self.label2,self.prob2,self.hmap2,self.xb_grad2 = label2_args
             
@@ -149,7 +151,7 @@ def get_grad_heatmap(learn,xb,y,size):
     '''
     xb = xb.cuda()
     m = learn.model.eval();
-    target_layer = m[0][-1][-1] # last layer of group 0
+    target_layer = self.layer # last layer of group 0
     hook_a,hook_g = hooked_backward(m,xb,target_layer,y)
     
     target_act= hook_a.stored[0].cpu().numpy()
