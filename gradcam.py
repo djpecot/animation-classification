@@ -145,13 +145,13 @@ def show_heatmap(hm,xb_im,size,ax=None):
     ax.imshow(hm, alpha=0.8, extent=(0,size,size,0),
               interpolation='bilinear',cmap='magma');
 
-def get_grad_heatmap(learn,xb,y,size):
+def get_grad_heatmap(learn,layer=m[0][-1][-1],xb,y,size):
     '''
     Main function to get hmap for heatmap and xb_grad for guided backprop
     '''
     xb = xb.cuda()
     m = learn.model.eval();
-    target_layer = self.layer # last layer of group 0
+    target_layer = layer # last layer of group 0
     hook_a,hook_g = hooked_backward(m,xb,target_layer,y)
     
     target_act= hook_a.stored[0].cpu().numpy()
