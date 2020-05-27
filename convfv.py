@@ -6,6 +6,7 @@ import gc
 import cv2
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 
 # Helper functions
