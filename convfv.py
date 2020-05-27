@@ -237,4 +237,4 @@ def plot_activations_and_reconstructions(imgs,activations,filters,
         plt.savefig(f'{save_name}.png')
         plt.close()
     else:
-    plt.show()
+        plt.show()
