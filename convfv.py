@@ -164,8 +164,9 @@ def custom_activations_and_reconstructions(img,FV,fmap_layer,
     """
     Used to input a custom list of filters for a given layer
     """
+    
     newlist = []
-    act_layers = FV.most_activated(img,layer = fmap_layer)
+    mean_acts = FV.most_activated(img,layer = fmap_layer)
 
     # COnstruct list to use for indexing custom featmap
     for i in feat_index:
