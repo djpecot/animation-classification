@@ -232,9 +232,8 @@ def plot_activations_and_reconstructions(imgs,activations,filters,
 
         ax.imshow(imgs[i])
     plt.tight_layout()
+    plt.show()
     save_name = layer_name.lower().replace(' ','_')
     if save_fig:
         plt.savefig(f'{save_name}.png')
-        plt.close()
-    else:
-        plt.show()
+        
