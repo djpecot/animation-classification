@@ -5,6 +5,7 @@ import scipy.ndimage
 import gc
 import cv2
 import matplotlib.gridspec as gridspec
+import matplotlib.pyplot as plt
 
 
 # Helper functions
@@ -149,6 +150,42 @@ def activations_and_reconstructions(img,FV,fmap_layer,
                                          save_fig=save_fig,
                                          album_hash=album_hash)
 
+def custom_activations_and_reconstructions(img,FV,fmap_layer,
+                                    feat_index,init_size=56,
+                                    upscaling_steps=12, upscaling_factor=1.2,
+                                    opt_steps=20, blur=5,lr=1e-1,
+                                    print_losses=False,
+                                    n_cols=3, cell_size=4,
+                                    layer_name='',
+                                    save_fig=False,
+                                    album_hash=None,
+                                    ):
+    """
+    Used to input a custom list of filters for a given layer
+    """
+    newlist = []
+    act_layers = FV.most_activated(img,layer = fmap_layer)
+
+    # COnstruct list to use for indexing custom featmap
+    for i in feat_index:
+      newlist.append(i)
+
+    imgs = []
+    for filter in newlist:
+        imgs.append(FV.visualize(fmap_layer, filter, upscaling_steps=upscaling_steps, 
+                                 sz = init_size,
+                                 upscaling_factor=upscaling_factor, 
+                                 opt_steps=opt_steps, blur=blur,
+                                 lr=lr,print_losses=False))
+    transformed_img = FV.get_transformed_img(img,224)
+    
+    plot_activations_and_reconstructions(imgs,mean_acts,
+                                         newlist,transformed_img,
+                                         n_cols=n_cols,cell_size=cell_size,
+                                         layer_name=layer_name,
+                                         save_fig=save_fig,
+                                         album_hash=album_hash)
+
 def plot_activations_and_reconstructions(imgs,activations,filters,
                                          transformed_img,n_cols=3,
                                          cell_size=4,layer_name='',
@@ -196,10 +233,8 @@ def plot_activations_and_reconstructions(imgs,activations,filters,
         ax.imshow(imgs[i])
     plt.tight_layout()
     save_name = layer_name.lower().replace(' ','_')
-#     if save_fig:
-#         plt.savefig(f'{save_name}.png')
-#         upload_to_imgur(f'{save_name}.png',
-#                         f'{save_name}',album_hash)
-#         plt.close()
-#     else:
+    if save_fig:
+        plt.savefig(f'{save_name}.png')
+        plt.close()
+    else:
     plt.show()
